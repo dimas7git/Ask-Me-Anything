@@ -1,9 +1,22 @@
 import { useParams } from "react-router-dom"
 import amaLogo from '../assets/ama-logo.svg';
-import { ArrowRight, ArrowUp, Share2 } from "lucide-react";
+import { ArrowRight, Share2 } from "lucide-react";
+import { toast } from "sonner";
+import { Message } from "../components/message";
 
 export function Room() {
     const { roomId } = useParams()
+    function handleShareRoom() {
+        const url = window.location.href.toString()
+
+        if (navigator.share !== undefined && navigator.canShare()) {
+            navigator.share({ url })
+        } else {
+            navigator.clipboard.writeText(url)
+
+            toast.info('O link da sala foi copiado para área de transferência!')
+        }
+    }
 
     return (
         <div className="mx-auto max-w-[640px] flex flex-col gap-6 py-10 px-4">
@@ -12,7 +25,7 @@ export function Room() {
                 <span className="text-sm text-zinc-500 truncate">
                     Código da sala: <span className="text-zinc-300">{roomId}</span>
                 </span>
-                <button type="submit" className="bg-zinc-800 text-zinc-300 px-5 py-1.5 gap-1.5 flex items-center rounded-lg font-medium text-sm transition-colors hover:bg-zinc-700">
+                <button onClick={handleShareRoom} type="submit" className="ml-auto bg-zinc-800 text-zinc-300 px-5 py-1.5 gap-1.5 flex items-center rounded-lg font-medium text-sm transition-colors hover:bg-zinc-700">
                     Compartilhar <Share2 className="size-4" />
                 </button>
             </div>
@@ -25,20 +38,9 @@ export function Room() {
                 </button>
             </form>
             <ol className="list-decimal list-outside px-3 space-y-8">
-                <li className="ml-4 leading-relaxed text-zinc-100">
-                TesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTeste
-                    <button type="button" className="mt-3 flex items-center gap-2 text-orange-400 text-sm font-medium">
-                        <ArrowUp className="size-4" />
-                        Curtir pergunta (123)
-                    </button>
-                </li>
-                <li className="ml-4 leading-relaxed text-zinc-100">
-                TesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTeste
-                    <button type="button" className="mt-3 flex items-center gap-2 text-zinc-400 text-sm font-medium hover:text-zinc-300">
-                        <ArrowUp className="size-4" />
-                        Curtir pergunta (123)
-                    </button>
-                </li>
+                <Message message="Como faço para criar um site?" amountOfReactions={3} answered />
+                <Message message="Qual a melhor linguagem de programação?" amountOfReactions={5} />
+                <Message message="Qual a melhor linguagem de programação?" amountOfReactions={5} />
             </ol>
         </div>
     )
